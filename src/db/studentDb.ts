@@ -1,5 +1,6 @@
 import sqlite3 from 'sqlite3';
 import type { StudentInterface } from '@/types/StudentInterface';
+import { RawStudentRow } from './interface/student';
 
 sqlite3.verbose();
 
@@ -7,7 +8,7 @@ export const getStudentsDb = async (): Promise<StudentInterface[]> => {
   const db = new sqlite3.Database(process.env.DB ?? './db/vki-web.db');
 
   try {
-    const rows = await new Promise((resolve, reject) => {
+    const rows = await new Promise<RawStudentRow[]>((resolve, reject) => {
       const sql = `
         SELECT 
           s.id,
@@ -19,23 +20,24 @@ export const getStudentsDb = async (): Promise<StudentInterface[]> => {
         FROM student s
         LEFT JOIN "class" g ON s.groupId = g.id
       `;
+
       db.all(sql, [], (err, result) => {
         if (err) {
           reject(err);
         } else {
-          resolve(result);
+          resolve(result as RawStudentRow[]);
         }
       });
     });
 
     const students: StudentInterface[] = rows.map(row => ({
-      id: row.id,
-      firstName: row.firstName,
-      lastName: row.lastName,
-      middleName: row.middleName,
+      id: Number(row.id),
+      firstName: row.firstName || '',
+      lastName: row.lastName || '',
+      middleName: row.middleName || '',
       group: {
-        id: row['group.id'],
-        name: row['group.name'],
+        id: Number(row['group.id']),
+        name: row['group.name'] ?? '',
       },
     }));
 

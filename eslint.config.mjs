@@ -79,7 +79,9 @@ export default [
       '@stylistic/object-curly-spacing': 'off',
       '@stylistic/array-bracket-spacing': 'off',
       '@stylistic/brace-style': 'off',
-
+      '@stylistic/multiline-ternary': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@stylistic/quote-props': 'off',
       // Best Practices
       eqeqeq: 'error', // Enforce strict equality === and !==
       'no-unused-vars': 'warn', // Or "error"
